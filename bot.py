@@ -43,4 +43,13 @@ async def register(interaction: discord.Interaction, username: str, tag: str, ra
     except Exception as e:
         await interaction.response.send_message(e)
 
+@tree.command(name = "unregister", description = "Unregister your account from this bot in this server.")
+@app_commands.describe()
+async def unregister(interaction: discord.Interaction):
+    try:
+        commands.unregister(interaction.user.id, interaction.guild.id)
+        await interaction.response.send_message(f"{interaction.user.mention} has been successfully unregistered")
+    except Exception as e:
+        await interaction.response.send_message(e)
+
 client.run(DISCORD_TOKEN)

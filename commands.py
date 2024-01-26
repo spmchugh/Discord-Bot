@@ -62,3 +62,11 @@ def registerUser(discordId, serverId, username, tag, puuid,
     session.add(newUser)
     session.commit()
 
+def unregister(discId, servId):
+    entries = session.query(users.User).filter_by(discordId = discId, serverId = servId).all()
+    if len(entries) == 0:
+        raise Exception("You are not registered in thsi server")
+    else:
+        for entry in entries:
+            session.delete(entry)
+        session.commit()
