@@ -55,24 +55,23 @@ async def unregister(interaction: discord.Interaction):
     except Exception as e:
         await interaction.response.send_message(e)
 
-L = 5    # elements per page
-
 @tree.command(name = "leaderboard", description = "Display the rank improvement leaderboard for this server")
 async def leaderboard(interaction: discord.Interaction):
     async def get_page(page: int):
-        emb = discord.Embed(title = "Rank Improvement Leaderboard",
+        embed = discord.Embed(title = "Rank Improvement Leaderboard",
                             description = "",
                             color = discord.Color.from_str("#101539"))
-        emb.set_thumbnail(url = "https://i.imgur.com/0QKRQ5V.png")
-        
-        offset = (page - 1) * L
-        users = commands.getImprovementLeaderboard(interaction.guild.id)
-        for user in users[offset:offset+L]:
-            emb.description += f"{user}\n"
-        n = Pagination.compute_total_pages(len(users), L)
-        emb.set_footer(text=f"Page {page} from {n}")
-        return emb, n
+        embed.set_thumbnail(url = "https://i.imgur.com/0QKRQ5V.png")
 
-    await Pagination(interaction, get_page).navegate()
-    
+        elementsPerPage = 5    # elements per page
+        offset = (page - 1) * elementsPerPage
+        users = commands.getImprovementLeaderboard(interaction.guild.id)
+        for user in users[offset:offset + elementsPerPage]:
+            embed.description += f"{user}\n"
+        pages = Pagination.getPageCount(len(users), elementsPerPage)
+        embed.set_footer(text=f"Page {page} from {pages}")
+        return embed, pages
+
+    await Pagination(interaction, get_page).navigate()
+
 client.run(DISCORD_TOKEN)
