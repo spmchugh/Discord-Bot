@@ -41,6 +41,18 @@ def getImprovementLeaderboard(server):
     place = 1
     players = session.query(users.User).filter_by(serverId = server).order_by(users.User.valueChange.desc()).all()
     for player in players:
-        text.append(f"**{place}. {player.username}** {player.currRank} {player.currDivision} {player.currLP} (+{player.valueChange} lp)")
+        if player.valueChange > 0:
+            text.append(f"**{place}. {player.username}** {player.currRank} {player.currDivision} {player.currLP} LP (+{player.valueChange} LP)")
+        else:
+            text.append(f"**{place}. {player.username}** {player.currRank} {player.currDivision} {player.currLP} LP ({player.valueChange} LP)")
+        place += 1
+    return text
+
+def getRankLeaderboard(server):
+    text = []
+    place = 1
+    players = session.query(users.User).filter_by(serverId = server).order_by(users.User.currValue.desc()).all()
+    for player in players:
+        text.append(f"**{place}. {player.username}** {player.currRank} {player.currDivision} {player.currLP} LP")
         place += 1
     return text

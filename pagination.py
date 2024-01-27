@@ -14,7 +14,7 @@ class Pagination(discord.ui.View):
         self.getPage = getPage
         self.totalPages: Optional[int] = None
         self.index = 1
-        super().__init__(timeout = 5)
+        super().__init__(timeout = 60)
 
     async def navigate(self):
         """

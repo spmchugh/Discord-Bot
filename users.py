@@ -92,7 +92,7 @@ def getCurrRank(summonerID):
     response = requests.get(f"https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summonerID}?api_key={constants.RIOT_KEY}")
     if response.status_code != 200:
         raise Exception("Error getting current rank from Riot Games")
+    response = response.json()
     if response == []:
         raise Exception("Player is unranked")
-    response = response.json()
     return response[0]["tier"], response[0]["rank"], response[0]["leaguePoints"]

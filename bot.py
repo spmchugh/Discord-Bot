@@ -74,4 +74,23 @@ async def leaderboard(interaction: discord.Interaction):
 
     await Pagination(interaction, get_page).navigate()
 
+@tree.command(name = "ranks", description = "Display the rank leaderboard for this server")
+async def leaderboard(interaction: discord.Interaction):
+    async def get_page(page: int):
+        embed = discord.Embed(title = "Rank Leaderboard",
+                            description = "",
+                            color = discord.Color.from_str("#101539"))
+        embed.set_thumbnail(url = "https://i.imgur.com/0QKRQ5V.png")
+
+        elementsPerPage = 5    # elements per page
+        offset = (page - 1) * elementsPerPage
+        users = commands.getRankLeaderboard(interaction.guild.id)
+        for user in users[offset:offset + elementsPerPage]:
+            embed.description += f"{user}\n"
+        pages = Pagination.getPageCount(len(users), elementsPerPage)
+        embed.set_footer(text=f"Page {page} from {pages}")
+        return embed, pages
+
+    await Pagination(interaction, get_page).navigate()
+
 client.run(DISCORD_TOKEN)
