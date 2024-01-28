@@ -57,6 +57,7 @@ async def unregister(interaction: discord.Interaction):
 
 @tree.command(name = "leaderboard", description = "Display the rank improvement leaderboard for this server")
 async def leaderboard(interaction: discord.Interaction):
+    await interaction.response.defer()
     commands.updateRanks(interaction.guild.id)
     async def get_page(page: int):
         embed = discord.Embed(title = "Rank Improvement Leaderboard",
@@ -77,6 +78,7 @@ async def leaderboard(interaction: discord.Interaction):
 
 @tree.command(name = "ranks", description = "Display the rank leaderboard for this server")
 async def leaderboard(interaction: discord.Interaction):
+    await interaction.response.defer()
     commands.updateRanks(interaction.guild.id)
     async def get_page(page: int):
         embed = discord.Embed(title = "Rank Leaderboard",
@@ -94,5 +96,11 @@ async def leaderboard(interaction: discord.Interaction):
         return embed, pages
 
     await Pagination(interaction, get_page).navigate()
+
+@tree.command(name = "info", description = "Display user's information")
+@app_commands.describe(user = "User's discord ID")
+async def info(interaction: discord.Interaction, user: str):
+    embed, file = commands.displayInfo(user, interaction.guild.id)
+    await interaction.response.send_message(file = file, embed = embed)
 
 client.run(DISCORD_TOKEN)

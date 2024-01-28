@@ -22,10 +22,10 @@ class Pagination(discord.ui.View):
         """
         emb, self.totalPages = await self.getPage(self.index)
         if self.totalPages == 1:
-            await self.interaction.response.send_message(embed=emb)
+            await self.interaction.followup.send(embed=emb)
         elif self.totalPages > 1:
             self.update_buttons()
-            await self.interaction.response.send_message(embed=emb, view=self)
+            await self.interaction.followup.send(embed=emb, view=self)
 
     async def edit_page(self, interaction: discord.Interaction):
         """
