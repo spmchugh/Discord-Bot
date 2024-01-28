@@ -2,6 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import users
 import re
+import requests
+import constants
 
 engine = create_engine("sqlite:///database.db", echo = False)
 users.Base.metadata.create_all(bind = engine)
@@ -35,6 +37,20 @@ def unregister(discId, servId):
         for entry in entries:
             session.delete(entry)
         session.commit()
+
+def updateRanks(server):
+    players = session.query(users.User).filter_by(serverId = server).all()
+    for player in players:
+        response = requests.get(f"https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/{player.summonerID}?api_key={constants.RIOT_KEY}")
+        if response.status_code != 200:
+            raise Exception("Error updating user ranks")
+        response = response.json()
+        player.currRank = response[0]["tier"]
+        player.currDivision = response[0]["rank"]
+        player.currLP = response[0]["leaguePoints"]
+        player.currValue = users.getRankValue(player.currRank, player.currDivision, player.currLP)
+        player.valueChange = player.currValue - player.startValue
+
 
 def getImprovementLeaderboard(server):
     text = []

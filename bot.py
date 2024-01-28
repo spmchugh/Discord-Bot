@@ -57,13 +57,14 @@ async def unregister(interaction: discord.Interaction):
 
 @tree.command(name = "leaderboard", description = "Display the rank improvement leaderboard for this server")
 async def leaderboard(interaction: discord.Interaction):
+    commands.updateRanks(interaction.guild.id)
     async def get_page(page: int):
         embed = discord.Embed(title = "Rank Improvement Leaderboard",
                             description = "",
                             color = discord.Color.from_str("#101539"))
         embed.set_thumbnail(url = "https://i.imgur.com/0QKRQ5V.png")
 
-        elementsPerPage = 5    # elements per page
+        elementsPerPage = 5
         offset = (page - 1) * elementsPerPage
         users = commands.getImprovementLeaderboard(interaction.guild.id)
         for user in users[offset:offset + elementsPerPage]:
@@ -76,13 +77,14 @@ async def leaderboard(interaction: discord.Interaction):
 
 @tree.command(name = "ranks", description = "Display the rank leaderboard for this server")
 async def leaderboard(interaction: discord.Interaction):
+    commands.updateRanks(interaction.guild.id)
     async def get_page(page: int):
         embed = discord.Embed(title = "Rank Leaderboard",
                             description = "",
                             color = discord.Color.from_str("#101539"))
         embed.set_thumbnail(url = "https://i.imgur.com/0QKRQ5V.png")
 
-        elementsPerPage = 5    # elements per page
+        elementsPerPage = 5
         offset = (page - 1) * elementsPerPage
         users = commands.getRankLeaderboard(interaction.guild.id)
         for user in users[offset:offset + elementsPerPage]:
