@@ -45,11 +45,13 @@ def updateRanks(server):
         if response.status_code != 200:
             raise Exception("Error updating user ranks")
         response = response.json()
-        player.currRank = response[0]["tier"]
-        player.currDivision = response[0]["rank"]
-        player.currLP = response[0]["leaguePoints"]
-        player.currValue = users.getRankValue(player.currRank, player.currDivision, player.currLP)
-        player.valueChange = player.currValue - player.startValue
+        for entry in response:
+            if entry["queueType"] == "RANKED_SOLO_5x5":
+                player.currRank = response[0]["tier"]
+                player.currDivision = response[0]["rank"]
+                player.currLP = response[0]["leaguePoints"]
+                player.currValue = users.getRankValue(player.currRank, player.currDivision, player.currLP)
+                player.valueChange = player.currValue - player.startValue
 
 
 def getImprovementLeaderboard(server):
@@ -72,3 +74,10 @@ def getRankLeaderboard(server):
         text.append(f"**{place}. {player.username}** {player.currRank} {player.currDivision} {player.currLP} LP")
         place += 1
     return text
+
+peck = session.query(users.User).filter_by(username = "FlyingRedTiger").one()
+response = requests.get(f"https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/{peck.summonerID}?api_key={constants.RIOT_KEY}")
+response = response.json()
+for entry in response:
+    if entry["queueType"] == "RANKED_SOLO_5x5":
+        print("Hello")

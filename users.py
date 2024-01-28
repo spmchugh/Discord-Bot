@@ -93,6 +93,7 @@ def getCurrRank(summonerID):
     if response.status_code != 200:
         raise Exception("Error getting current rank from Riot Games")
     response = response.json()
-    if response == []:
-        raise Exception("Player is unranked")
-    return response[0]["tier"], response[0]["rank"], response[0]["leaguePoints"]
+    for entry in response:
+        if entry["queueType"] == "RANKED_SOLO_5x5":
+            return response[0]["tier"], response[0]["rank"], response[0]["leaguePoints"]
+    raise Exception("User is not ranked in Solo/Duo queue.")
