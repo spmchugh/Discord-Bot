@@ -112,7 +112,7 @@ def getRankValue(rank, division, lp):
     division - the user's division
     lp - the user's lp
     """
-    if rank not in ["Master", "Grandmaster", "Challenger"]:
+    if rank not in ["MASTER", "GRANDMASTER", "CHALLENGER"]:
         return ranks[rank] + divisions[division] + lp
     else:
         return lp + 2800

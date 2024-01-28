@@ -152,6 +152,8 @@ def displayInfo(user, server):
     # Parse the discord ID and use it to query the database for the player's User object
     discID = int(re.search(r"[0-9]+", user).group())
     player = session.query(users.User).filter_by(discordId = discID, serverId = server).first()
+    if player is None:
+        raise Exception("User not registered in this server.")
 
     # Call the Riot Games APIs to get ranked information and account information. If either return
     # an unsuccessful response code, raise an exception. Then convert response and icon data to needed types.

@@ -110,8 +110,12 @@ def run():
     @tree.command(name = "info", description = "Display user's information")
     @app_commands.describe(user = "User's discord ID")
     async def info(interaction: discord.Interaction, user: str):
-        embed, file = commands.displayInfo(user, interaction.guild.id)
-        await interaction.response.send_message(file = file, embed = embed)
+        try:
+            await interaction.response.defer()
+            embed, file = commands.displayInfo(user, interaction.guild.id)
+            await interaction.followup.send(file = file, embed = embed)
+        except Exception as e:
+            await interaction.followup.send(e)
 
     client.run(DISCORD_TOKEN) # Run the bot
 
